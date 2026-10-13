@@ -1,0 +1,60 @@
+
+name: Build and deploy website
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Build website
+        run: |
+          python3 build.py
+          python3 - <<'PY'
+          from pathlib import Path
+          base = "/safe-and-secure-solutions"
+          for p in Path("dist").rglob("*.html"):
+              s = p.read_text(encoding="utf-8")
+              s = s.replace('href="/', f'href="{base}/')
+              s = s.replace('src="/', f'src="{base}/')
+              p.write_text(s, encoding="utf-8")
+          PY
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v4
