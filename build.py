@@ -6,7 +6,7 @@ import os, json, shutil, html
 from urllib.parse import quote
 
 # ============================== CONFIG ==============================
-DOMAIN = "DOMAIN = "DOMAIN = "https://tumkurlaptops.github.io/safe-and-secure-solutions"        # <-- your real domain, no trailing slash"        # <-- your real domain, no trailing slash
+DOMAIN = "https://tumkurlaptops.github.io/safe-and-secure-solutions"        # <-- your real domain, no trailing slash"        # <-- your real domain, no trailing slash
 BIZ = "Safe and Secure Solutions"
 PHONE_DISPLAY = "97432 74005"
 PHONE_TEL = "+919743274005"
